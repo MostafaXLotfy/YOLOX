@@ -13,6 +13,7 @@ from yolox.utils import bboxes_iou, meshgrid
 
 from .losses import IOUloss
 from .network_blocks import BaseConv, DWConv
+import numpy as np
 
 
 class YOLOXHead(nn.Module):
@@ -124,6 +125,12 @@ class YOLOXHead(nn.Module):
         self.use_l1 = False
         self.l1_loss = nn.L1Loss(reduction="none")
         self.bcewithlog_loss = nn.BCEWithLogitsLoss(reduction="none")
+        #weighted loss for speed limit signs
+        loss_weight = np.array([
+            0.05804891, 0.05294276, 0.02875571, 0.12416017, 0.22063961, 0.01719968, 0.1894652, 0.14700349, 0.03439936, 0.12738511])
+        loss_weight = torch.from_numpy(loss_weight)
+        
+        self.bcewithlog_weightedLoss = nn.BCEWithLogitsLoss(reduction="none", weight=loss_weight)
         self.iou_loss = IOUloss(reduction="none")
         self.strides = strides
         self.grids = [torch.zeros(1)] * len(in_channels)
@@ -389,7 +396,7 @@ class YOLOXHead(nn.Module):
             self.bcewithlog_loss(obj_preds.view(-1, 1), obj_targets)
         ).sum() / num_fg
         loss_cls = (
-            self.bcewithlog_loss(
+            self.bcewithlog_weightedLoss(
                 cls_preds.view(-1, self.num_classes)[fg_masks], cls_targets
             )
         ).sum() / num_fg
