@@ -125,12 +125,6 @@ class YOLOXHead(nn.Module):
         self.use_l1 = False
         self.l1_loss = nn.L1Loss(reduction="none")
         self.bcewithlog_loss = nn.BCEWithLogitsLoss(reduction="none")
-        #weighted loss for speed limit signs
-        loss_weight = np.array([0.94195109, 0.94705724, 0.97124429, 0.87583983, 0.77936039, 0.98280032,
-                                 0.8105348, 0.85299651, 0.96560064, 0.87261489])
-        loss_weight = torch.from_numpy(loss_weight)
-        
-        self.bcewithlog_weightedLoss = nn.BCEWithLogitsLoss(reduction="none", weight=loss_weight)
         self.iou_loss = IOUloss(reduction="none")
         self.strides = strides
         self.grids = [torch.zeros(1)] * len(in_channels)
@@ -396,7 +390,7 @@ class YOLOXHead(nn.Module):
             self.bcewithlog_loss(obj_preds.view(-1, 1), obj_targets)
         ).sum() / num_fg
         loss_cls = (
-            self.bcewithlog_weightedLoss(
+            self.bcewithlog_loss(
                 cls_preds.view(-1, self.num_classes)[fg_masks], cls_targets
             )
         ).sum() / num_fg
