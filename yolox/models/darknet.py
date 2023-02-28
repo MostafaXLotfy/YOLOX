@@ -124,7 +124,7 @@ class CSPDarknet(nn.Module):
                 depthwise=depthwise,
                 act=act,
             ),
-            nn.Dropout2d(0.3)
+            nn.Dropout2d(0.5)
         )
 
         # dark3
@@ -137,7 +137,7 @@ class CSPDarknet(nn.Module):
                 depthwise=depthwise,
                 act=act,
             ),
-            nn.Dropout2d(0.3)
+            nn.Dropout2d(0.5)
         )
 
         # dark4
@@ -150,7 +150,7 @@ class CSPDarknet(nn.Module):
                 depthwise=depthwise,
                 act=act,
             ),
-            nn.Dropout2d(0.3)
+            nn.Dropout2d(0.5)
         )
 
         # dark5
@@ -165,7 +165,7 @@ class CSPDarknet(nn.Module):
                 depthwise=depthwise,
                 act=act,
             ),
-            nn.Dropout2d(0.3)
+            nn.Dropout2d(0.5)
         )
 
     def forward(self, x):
