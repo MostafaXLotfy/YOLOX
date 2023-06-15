@@ -102,6 +102,7 @@ class CSPDarknet(nn.Module):
         out_features=("dark3", "dark4", "dark5"),
         depthwise=False,
         act="silu",
+        dropout_rate=0.3,
     ):
         super().__init__()
         assert out_features, "please provide output features of Darknet"
@@ -124,7 +125,7 @@ class CSPDarknet(nn.Module):
                 depthwise=depthwise,
                 act=act,
             ),
-            nn.Dropout2d(0.5)
+            nn.Dropout2d(dropout_rate)
         )
 
         # dark3
@@ -137,7 +138,7 @@ class CSPDarknet(nn.Module):
                 depthwise=depthwise,
                 act=act,
             ),
-            nn.Dropout2d(0.5)
+            nn.Dropout2d(dropout_rate)
         )
 
         # dark4
@@ -150,7 +151,7 @@ class CSPDarknet(nn.Module):
                 depthwise=depthwise,
                 act=act,
             ),
-            nn.Dropout2d(0.5)
+            nn.Dropout2d(dropout_rate)
         )
 
         # dark5
@@ -165,7 +166,7 @@ class CSPDarknet(nn.Module):
                 depthwise=depthwise,
                 act=act,
             ),
-            nn.Dropout2d(0.5)
+            nn.Dropout2d(dropout_rate)
         )
 
     def forward(self, x):
